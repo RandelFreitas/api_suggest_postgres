@@ -3,7 +3,7 @@ module.exports = {
   host: 'localhost',
   username: 'postgres',
   password: 'root',
-  database: 'crud1',
+  database: 'suggest',
   define: {
     timestamps: true,
     underscored: true,
