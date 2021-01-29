@@ -11,16 +11,7 @@ class Address extends Model {
       city: DataTypes.STRING,
       type: DataTypes.STRING,
       obs: DataTypes.STRING,
-    }, {
-      sequelize
-    })
-  }
-
-  static associate(models) {
-    this.belongsTo(
-      models.User, 
-      { foreignKey: 'user_id', as: 'user' }
-    );
+    }, { sequelize })
   }
 }
 

@@ -27,6 +27,10 @@ module.exports = {
       cpf_cnpj: {
         type: Sequelize.STRING,
       },
+      address_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'address', key: 'id' },
+      },
       password_reset_token: {
         type: Sequelize.STRING,
       },

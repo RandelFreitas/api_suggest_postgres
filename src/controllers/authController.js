@@ -21,8 +21,8 @@ module.exports = {
 
       return res.status(201).send({success: "Usuário cadastrado com sucesso."});
     }catch(e){
-      res.status(400).send({err: "Erro no servidor."})
       console.log(e);
+      return res.status(400).send({err: "Erro no servidor."})
     }
   },
   
@@ -42,10 +42,10 @@ module.exports = {
         expiresIn: 86400,
       });
 
-      res.send({token});
+      return res.send({token});
     }catch(e){
-      res.status(400).send({err: "Erro no login."});
       console.log(e);
+      return res.status(400).send({err: "Erro no login."});
     }
   },
   
@@ -61,8 +61,9 @@ module.exports = {
 
       now.setHours(now.getHours()+1);
       
-    }catch(err){
-      res.status(400).send({err: 'Erro ao resetar a senha, tente novamente mais tarde.'});
+    }catch(e){
+      console.log(e);
+      return res.status(400).send({err: 'Erro ao resetar a senha, tente novamente mais tarde.'});
     }
   },
 
@@ -82,9 +83,10 @@ module.exports = {
       }
       user.password = password;
       await user.save();
-      res.send({success: 'Senha recuperada com sucesso.'});
+      return res.send({success: 'Senha recuperada com sucesso.'});
     }catch(err){
-      res.status(400).send({err: 'Erro ao resetar senha, tente novamente mais tarde.'});
+      console.log(e);
+      return res.status(400).send({err: 'Erro ao resetar senha, tente novamente mais tarde.'});
     }
   },
   async logout(req, res){
