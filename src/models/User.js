@@ -11,15 +11,15 @@ class User extends Model {
       phone: DataTypes.STRING,
       password_reset_token: DataTypes.STRING,
       password_reset_expires: DataTypes.STRING,
-    }, { sequelize });
-  }
+    }, {sequelize});
+  };
 
   static associate(models){
     this.belongsTo(
       models.Address, 
       {foreignKey: 'address_id', as: 'address'}
-    )
-  }
-}
+    );
+  };
+};
 
 module.exports = User;

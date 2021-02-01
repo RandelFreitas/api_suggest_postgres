@@ -2,7 +2,7 @@ module.exports = {
   getAllCompanies(req, res){
     return res.json({"Func": "get-all"});
   },
-  getById(req, res){
+  getByIdCompany(req, res){
     return res.json({"Func": "by-id"});
   },
   addCompany(req, res){

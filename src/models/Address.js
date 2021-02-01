@@ -11,8 +11,15 @@ class Address extends Model {
       city: DataTypes.STRING,
       type: DataTypes.STRING,
       obs: DataTypes.STRING,
-    }, { sequelize })
-  }
-}
+    }, { sequelize });
+  };
+
+  static associate(models) {
+    this.hasMany(
+      models.User, 
+      { foreignKey: 'address_id', as: 'users' }
+    );
+  };
+};
 
 module.exports = Address;
