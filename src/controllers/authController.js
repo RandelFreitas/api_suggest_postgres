@@ -25,6 +25,18 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."})
     }
   },
+
+  async update(req, res){
+    const { user_id } = req;
+    try{
+      await User.update(req.body, {where: {id: user_id}});
+
+      return res.status(201).send({success: "Usuário atualizado com sucesso."});
+    }catch(e){
+      console.log(e);
+      return res.status(400).send({err: "Erro no servidor."})
+    }
+  },
   
   async signIn(req, res){
     const { email, password } = req.body;

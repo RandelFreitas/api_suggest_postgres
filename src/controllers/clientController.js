@@ -1,5 +1,3 @@
-const { resetPassword } = require("./authController");
-
 module.exports = {
   getMenu(req, res){
     return res.json({"Func": "menu"});

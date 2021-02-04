@@ -27,9 +27,29 @@ module.exports = {
       cpf_cnpj: {
         type: Sequelize.STRING,
       },
-      address_id: {
+      zipcode: {
+        type: Sequelize.STRING,
+      },
+      street: {
+        type: Sequelize.STRING,
+      },
+      number: {
         type: Sequelize.INTEGER,
-        references: { model: 'addresses', key: 'id' },
+      },
+      district: {
+        type: Sequelize.STRING,
+      },
+      state: {
+        type: Sequelize.STRING,
+      },
+      city: {
+        type: Sequelize.STRING,
+      },
+      type: {
+        type: Sequelize.STRING,
+      },
+      obs: {
+        type: Sequelize.STRING,
       },
       password_reset_token: {
         type: Sequelize.STRING,

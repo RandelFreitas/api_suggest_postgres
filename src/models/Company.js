@@ -3,6 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 class Company extends Model {
   static init(sequelize) {
     super.init({
+      user_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       cnpj: DataTypes.STRING,
       slogan: DataTypes.INTEGER,
@@ -20,6 +21,13 @@ class Company extends Model {
       reservation: DataTypes.BOOLEAN,
       menu: DataTypes.BOOLEAN,
       call: DataTypes.BOOLEAN,
+      zipcode: DataTypes.STRING,
+      street: DataTypes.STRING,
+      number: DataTypes.INTEGER,
+      district: DataTypes.STRING,
+      state: DataTypes.STRING,
+      city: DataTypes.STRING,
+      type: DataTypes.STRING,
       obs: DataTypes.STRING,
     }, { sequelize });
   }
