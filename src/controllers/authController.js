@@ -44,10 +44,10 @@ module.exports = {
       const user = await User.findOne({where: {email}});
       
       if(!user){
-        return res.status(400).send({err: "Usuário não existe."});
+        return res.status(401).send({err: "Usuário não existe."});
       }
       if(!await bcrypt.compare(password, user.password)){
-        return res.status(400).send({err: "Senha ou email inválidos."});
+        return res.status(401).send({err: "Senha ou email inválidos."});
       }
       
       const token = jwt.sign({id: user.id}, process.env.SECRET, {
@@ -88,10 +88,10 @@ module.exports = {
         return res.status(400).send({err: 'Usuário não encontrado!'});
       }
       if(token !== user.passwordResetToken){
-        return res.status(400).send({err: 'Token inválido'});
+        return res.status(401).send({err: 'Token inválido'});
       }
       if(now > user.passwordResetExpires){
-        return res.status(400).send({err: 'Token expirado, recupere novamente a senha.'});
+        return res.status(401).send({err: 'Token expirado, recupere novamente a senha.'});
       }
       user.password = password;
       await user.save();
