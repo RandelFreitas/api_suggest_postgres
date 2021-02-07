@@ -3,6 +3,13 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable('users', { 
+      tenant_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {model: 'adms', key: 'id'},
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -27,35 +34,11 @@ module.exports = {
       cpf_cnpj: {
         type: Sequelize.STRING,
       },
-      zipcode: {
-        type: Sequelize.STRING,
-      },
-      street: {
-        type: Sequelize.STRING,
-      },
-      number: {
-        type: Sequelize.INTEGER,
-      },
-      district: {
-        type: Sequelize.STRING,
-      },
-      state: {
-        type: Sequelize.STRING,
-      },
-      city: {
-        type: Sequelize.STRING,
-      },
-      type: {
-        type: Sequelize.STRING,
-      },
-      obs: {
-        type: Sequelize.STRING,
-      },
       password_reset_token: {
         type: Sequelize.STRING,
       },
       password_reset_expires: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
       },
       created_at: {
         type: Sequelize.DATE,

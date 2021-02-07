@@ -3,9 +3,12 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable('companies', {
-      user_id: {
+      tenant_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {model: 'adms', key: 'id'},
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       id: {
         type: Sequelize.INTEGER,
@@ -83,14 +86,6 @@ module.exports = {
         allowNull: false,
         defaultValue: false
       },
-      zipcode: {type: Sequelize.STRING},
-      street: {type: Sequelize.STRING},
-      number: {type: Sequelize.INTEGER},
-      district: {type: Sequelize.STRING},
-      state: {type: Sequelize.STRING},
-      city: {type: Sequelize.STRING},
-      type: {type: Sequelize.STRING},
-      obs: {type: Sequelize.STRING},
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

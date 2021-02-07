@@ -1,7 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mailer = require('../resources/mailer');
+
 const crypto = require('crypto');
 const User = require('../models/User');
+const Adm = require('../models/Adm');
+const { Console } = require('console');
 
 module.exports = {
   async signUp(req, res){
@@ -13,7 +17,10 @@ module.exports = {
 
       var passwordEncrypt = await bcrypt.hash(password, 10);
 
+      const adm = await Adm.create({});
+
       await User.create({
+        tenant_id: adm.id,
         name: name,
         email: email,
         password: passwordEncrypt
@@ -50,7 +57,7 @@ module.exports = {
         return res.status(401).send({err: "Senha ou email inválidos."});
       }
       
-      const token = jwt.sign({id: user.id}, process.env.SECRET, {
+      const token = jwt.sign({id: user.id, tenant_id: user.tenant_id}, process.env.SECRET, {
         expiresIn: 86400,
       });
 
@@ -66,13 +73,31 @@ module.exports = {
     try{
       const user = await User.findOne({where: {email}});
       if(!user){
-        return res.status(400).send({err: 'Usuário não encontrado.'})
-      }
+        return res.status(400).send({err: 'Usuário não encontrado.'});
+      };
+
       const token = crypto.randomBytes(20).toString('hex');
       const now = new Date();
 
       now.setHours(now.getHours()+1);
-      
+      await User.update({
+        password_reset_token: token,
+        password_reset_expires: now,
+      }, {where: {id: user.id}});
+
+      mailer.sendMail({
+        to: email,
+        from: '"SuggestInBox" <recuperarsenha@suggestinbox.com.br>',
+        subject: 'Recuperação de senha',
+        template: 'auth/fogot_password',
+        context: { token, email }
+      }, (err) => {
+        if(err){
+          console.log(err);
+          return res.status(400).send({err: "Email não enviado, tente mais tarde."});
+        }
+        return res.send({err: "Email enviado com sucesso."});
+      });
     }catch(e){
       console.log(e);
       return res.status(400).send({err: 'Erro ao resetar a senha, tente novamente mais tarde.'});
@@ -85,16 +110,18 @@ module.exports = {
     try{
       const user = await User.findOne({where: {email}});
       if(!user){
-        return res.status(400).send({err: 'Usuário não encontrado!'});
+        return res.status(400).send({err: 'Usuário não encontrado.'});
       }
-      if(token !== user.passwordResetToken){
-        return res.status(401).send({err: 'Token inválido'});
+      if(token !== user.password_reset_token){
+        return res.status(401).send({err: 'Token inválido.'});
       }
-      if(now > user.passwordResetExpires){
+      if(now > user.password_reset_expires){
         return res.status(401).send({err: 'Token expirado, recupere novamente a senha.'});
       }
-      user.password = password;
-      await user.save();
+      var passwordEncrypt = await bcrypt.hash(password, 10);
+      user.password = passwordEncrypt;
+      
+      //await user.save();
       return res.send({success: 'Senha recuperada com sucesso.'});
     }catch(err){
       console.log(e);
@@ -103,5 +130,16 @@ module.exports = {
   },
   async logout(req, res){
     return res.json({"Func": "logout"});
+  },
+  //OBTER USUARIO
+  async teste(req, res){
+    const { email } = req.body;
+    try{
+      const user = await User.findOne({where: {email}});
+
+      return res.send(user);
+    }catch(e){
+      console.log(e);
+    }
   }
 }
