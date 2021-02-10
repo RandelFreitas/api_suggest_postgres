@@ -5,9 +5,9 @@ const mailer = require('../resources/mailer');
 const crypto = require('crypto');
 const User = require('../models/User');
 const Adm = require('../models/Adm');
-const { Console } = require('console');
 
 module.exports = {
+  //CADASTRO DE USUÁRIO
   async signUp(req, res){
     const { name, email, password } = req.body;
     try{
@@ -16,7 +16,6 @@ module.exports = {
       }
 
       var passwordEncrypt = await bcrypt.hash(password, 10);
-
       const adm = await Adm.create({});
 
       await User.create({
@@ -32,7 +31,7 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."})
     }
   },
-
+  //UPDATE DE USUÁRIO
   async update(req, res){
     const { user_id } = req;
     try{
@@ -44,11 +43,12 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."})
     }
   },
-  
+  //LOGIN
   async signIn(req, res){
     const { email, password } = req.body;
     try{
       const user = await User.findOne({where: {email}});
+      const { name } = user;
       
       if(!user){
         return res.status(401).send({err: "Usuário não existe."});
@@ -61,13 +61,13 @@ module.exports = {
         expiresIn: 86400,
       });
 
-      return res.send({token});
+      return res.send({name, token});
     }catch(e){
       console.log(e);
       return res.status(400).send({err: "Erro no login."});
     }
   },
-  
+  //ESQUECI A SENHA
   async fogotPassword(req, res){
     const { email } = req.body;
     try{
@@ -89,7 +89,7 @@ module.exports = {
         to: email,
         from: '"SuggestInBox" <recuperarsenha@suggestinbox.com.br>',
         subject: 'Recuperação de senha',
-        template: 'auth/fogot_password',
+        template: '/fogot_password',
         context: { token, email }
       }, (err) => {
         if(err){
@@ -103,7 +103,7 @@ module.exports = {
       return res.status(400).send({err: 'Erro ao resetar a senha, tente novamente mais tarde.'});
     }
   },
-
+  //RESET DE SENHA
   async resetPassword(req, res){
     const { email, token, password } = req.body;
     const now = new Date();
@@ -119,19 +119,19 @@ module.exports = {
         return res.status(401).send({err: 'Token expirado, recupere novamente a senha.'});
       }
       var passwordEncrypt = await bcrypt.hash(password, 10);
-      user.password = passwordEncrypt;
       
-      //await user.save();
+      await user.update({password: passwordEncrypt}, {where: {id: user.id}});
       return res.send({success: 'Senha recuperada com sucesso.'});
     }catch(err){
       console.log(e);
       return res.status(400).send({err: 'Erro ao resetar senha, tente novamente mais tarde.'});
     }
   },
+  //LOGOUT TOKEN
   async logout(req, res){
     return res.json({"Func": "logout"});
   },
-  //OBTER USUARIO
+  //OBTER USUARIO TESTE
   async teste(req, res){
     const { email } = req.body;
     try{

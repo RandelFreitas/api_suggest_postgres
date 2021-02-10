@@ -30,6 +30,6 @@ module.exports = ( req, res, next) => {
       return next();
     });
   }catch(err){
-    return res.status(401).send({err: 'Serviço indisponível no momento, tente mais tarde.'})
+    return res.status(400).send({err: 'Serviço indisponível no momento, tente mais tarde.'})
   }
 }

@@ -24,7 +24,7 @@ module.exports = {
         return res.status(400).send({err: "Compania não existe."});
       };
 
-      if(!(tenant_id === company.tenant_id)){
+      if(tenant_id !== company.tenant_id){
         return res.status(401).send({err: "Companhia não pertence ao usuário."});
       };
 
