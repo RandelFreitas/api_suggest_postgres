@@ -48,7 +48,6 @@ module.exports = {
     const { email, password } = req.body;
     try{
       const user = await User.findOne({where: {email}});
-      const { name } = user;
       
       if(!user){
         return res.status(401).send({err: "Usuário não existe."});
@@ -60,6 +59,7 @@ module.exports = {
       const token = jwt.sign({id: user.id, tenant_id: user.tenant_id}, process.env.SECRET, {
         expiresIn: 86400,
       });
+      const { name } = user;
 
       return res.send({name, token});
     }catch(e){
@@ -96,7 +96,7 @@ module.exports = {
           console.log(err);
           return res.status(400).send({err: "Email não enviado, tente mais tarde."});
         }
-        return res.send({err: "Email enviado com sucesso."});
+        return res.send({success: "Email enviado com sucesso."});
       });
     }catch(e){
       console.log(e);
