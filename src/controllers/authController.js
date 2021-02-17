@@ -59,9 +59,9 @@ module.exports = {
       const token = jwt.sign({id: user.id, tenant_id: user.tenant_id}, process.env.SECRET, {
         expiresIn: 86400,
       });
-      const { name } = user;
+      const { name, id } = user;
 
-      return res.send({name, token});
+      return res.send({name, id, token});
     }catch(e){
       console.log(e);
       return res.status(400).send({err: "Erro no login."});
