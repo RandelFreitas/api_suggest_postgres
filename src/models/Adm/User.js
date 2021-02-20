@@ -19,7 +19,12 @@ class User extends Model {
       models.Adm,
       { foreignKey: 'tenant_id', as: 'tenant'}
     );
+    this.hasOne(
+      models.Address,
+      { foreignKey: 'user_id', as: 'address'}
+    );
   };
+
 };
 
 module.exports = User;

@@ -28,6 +28,10 @@ class Company extends Model {
       models.Adm,
       { foreignKey: 'tenant_id', as: 'tenant'}
     );
+    this.hasOne(
+      models.Address,
+      { foreignKey: 'company_id', as: 'address'}
+    );
   };
 };
 

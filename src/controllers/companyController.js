@@ -1,13 +1,45 @@
-const Company = require('../models/Company');
+const Company = require('../models/Company/Company');
+const Address = require('../models/Shared/Address');
 
 module.exports = {
   //GET AL COMPANIES
   async getAllCompanies(req, res){
     const { tenant_id } = req;
+    const { page, pageSize } = req.query;
+
+    if(!tenant_id || !page || !pageSize){
+      return res.status(400).send({err: "Requisição mal formada."});
+    }
+
+    const offset = (page * pageSize);
+    const limit = pageSize;
+    
     try{
-      const companies = await Company.findAll({where: {tenant_id}});
+      const companies = await Company.findAndCountAll({
+        limit, offset,
+        include: { association: 'address'},
+        where: {tenant_id}
+      });
 
       return res.send(companies);
+    }catch(e){
+      console.log(e);
+      return res.status(400).send({err: "Erro no servidor."});
+    }
+  },
+  //CADASTRO DE ENDEREÇO PARA COMPANY
+  async addCompanyAddress(req, res){
+    const { company_id } = req.body;
+    try{
+      const company = await Company.findByPk(company_id);
+      
+      if(!company){
+        return res.status(400).send({err: "Companhia não encontrada."});
+      }
+
+      await Address.create(req.body);
+
+      return res.status(201).send({success: "Endereço cadastrado com sucesso."});
     }catch(e){
       console.log(e);
       return res.status(400).send({err: "Erro no servidor."});

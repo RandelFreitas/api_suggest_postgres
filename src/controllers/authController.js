@@ -3,46 +3,9 @@ const jwt = require('jsonwebtoken');
 const mailer = require('../resources/mailer');
 
 const crypto = require('crypto');
-const User = require('../models/User');
-const Adm = require('../models/Adm');
+const User = require('../models/Adm/User');
 
 module.exports = {
-  //CADASTRO DE USUÁRIO
-  async signUp(req, res){
-    const { name, email, password } = req.body;
-    try{
-      if(await User.findOne({where: {email}})){
-        return res.status(400).send({err: "Email já cadastrado."});
-      }
-
-      var passwordEncrypt = await bcrypt.hash(password, 10);
-      const adm = await Adm.create({});
-
-      await User.create({
-        tenant_id: adm.id,
-        name: name,
-        email: email,
-        password: passwordEncrypt
-      });
-
-      return res.status(201).send({success: "Usuário cadastrado com sucesso."});
-    }catch(e){
-      console.log(e);
-      return res.status(400).send({err: "Erro no servidor."})
-    }
-  },
-  //UPDATE DE USUÁRIO
-  async update(req, res){
-    const { user_id } = req;
-    try{
-      await User.update(req.body, {where: {id: user_id}});
-
-      return res.status(201).send({success: "Usuário atualizado com sucesso."});
-    }catch(e){
-      console.log(e);
-      return res.status(400).send({err: "Erro no servidor."})
-    }
-  },
   //LOGIN
   async signIn(req, res){
     const { email, password } = req.body;
