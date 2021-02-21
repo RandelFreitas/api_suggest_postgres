@@ -2,21 +2,12 @@ const Company = require('../models/Company/Company');
 const Address = require('../models/Shared/Address');
 
 module.exports = {
-  //GET AL COMPANIES
+  //OBTER TODAS COMPANHIAS
   async getAllCompanies(req, res){
     const { tenant_id } = req;
-    const { page, pageSize } = req.query;
-
-    if(!tenant_id || !page || !pageSize){
-      return res.status(400).send({err: "Requisição mal formada."});
-    }
-
-    const offset = (page * pageSize);
-    const limit = pageSize;
     
     try{
-      const companies = await Company.findAndCountAll({
-        limit, offset,
+      const companies = await Company.findAll({
         include: { association: 'address'},
         where: {tenant_id}
       });
@@ -27,7 +18,7 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."});
     }
   },
-  //CADASTRO DE ENDEREÇO PARA COMPANY
+  //CADASTRO DE ENDEREÇO PARA COMPANHIA
   async addCompanyAddress(req, res){
     const { company_id } = req.body;
     try{
@@ -45,7 +36,7 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."});
     }
   },
-  //GET BY ID
+  //OBTER COMANHIA POR ID
   async getByIdCompany(req, res){
     const { tenant_id } = req;
     const { id } = req.params;
@@ -66,7 +57,7 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."});
     };
   },
-  //ADD COMPANY
+  //ADICIONAR COMPANHIA
   async addCompany(req, res){
     const { tenant_id } = req;
     try{
@@ -88,11 +79,11 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."});
     };
   },
-  //UPDATE COMPANY
+  //ATUALIZAR COMPANHIA
   async updateCompany(req, res){
     return res.json({"Func": "update"});
   },
-  //DELETE COMPANY
+  //DELETAR COMPANHIA
   async deleteCompany(req, res){
     return res.json({"Func": "delete"});
   },

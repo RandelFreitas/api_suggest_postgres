@@ -79,5 +79,28 @@ module.exports = {
       console.log(e);
       return res.status(400).send({err: "Erro no servidor."});
     }
+  },
+  //OBTER USUÁRIO POR ID
+  async getUserById(req, res){
+    const { tenant_id } = req;
+    const { id } = req.params;
+    
+    try{
+      const user = await User.findByPk(id);
+      
+      if(!user){
+        return res.status(400).send({err: "Usuário não cadastrado."});
+      };
+
+      if(tenant_id !== user.tenant_id){
+        return res.status(401).send({err: "Usuário não pertence ao Adm."});
+      }
+      user.password = undefined;
+
+      return res.send(user);
+    }catch(e){
+      console.log(e);
+      return res.status(400).send({err: "Erro no servidor."});
+    }
   }
 }
