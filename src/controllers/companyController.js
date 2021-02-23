@@ -41,7 +41,7 @@ module.exports = {
     const { tenant_id } = req;
     const { id } = req.params;
     try{
-      const company = await Company.findByPk(id);
+      const company = await Company.findByPk(id, {include: { association: 'address'}});
 
       if(!company){
         return res.status(400).send({err: "Compania não existe."});

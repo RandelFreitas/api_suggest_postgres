@@ -86,7 +86,7 @@ module.exports = {
     const { id } = req.params;
     
     try{
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(id, {include: { association: 'address'}});
       
       if(!user){
         return res.status(400).send({err: "Usuário não cadastrado."});
