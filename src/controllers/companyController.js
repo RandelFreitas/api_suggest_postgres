@@ -81,7 +81,46 @@ module.exports = {
   },
   //ATUALIZAR COMPANHIA
   async updateCompany(req, res){
-    return res.json({"Func": "update"});
+    const { tenant_id } = req;
+    const { id } = req.params;
+    let obj = req.body;
+    var propNames = Object.getOwnPropertyNames(obj);
+    for (var i = 0; i < propNames.length; i++) {
+      var propName = propNames[i];
+      if (obj[propName] === null || obj[propName] === "" || obj[propName] === undefined) {
+          delete obj[propName];
+      }
+    }
+
+    try{
+      const company = await Company.findByPk(id);
+      if(!company){
+        return res.status(400).send({err: "Companhia não encontrada."});
+      };
+      if(tenant_id !== company.tenant_id){
+        return res.status(401).send({err: "Companhia não pertence ao Adm."});
+      };
+
+      await Company.update({
+        name: obj.name,
+        cnpj: obj.cnpj,
+        slogan: obj.slogan,
+        history: obj.history,
+        localization: obj.localization,
+        email: obj.email,
+        phone: obj.phone,
+        img_url: obj.img_url,
+        suggest: obj.suggest,
+        promo: obj.promo,
+        delivery: obj.delivery,
+        reservation: obj.reservation,
+        menu: obj.menu,
+        call: obj.call,
+      })
+    }catch(e){
+      console.log(e);
+      return res.status(400).send({err: "Erro no servidor."});
+    }
   },
   //DELETAR COMPANHIA
   async deleteCompany(req, res){

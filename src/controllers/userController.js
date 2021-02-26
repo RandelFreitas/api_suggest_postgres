@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/Adm/User');
 const Adm = require('../models/Adm/Adm');
 const Address = require('../models/Shared/Address');
@@ -27,27 +28,62 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."})
     }
   },
-  //CADASTRO DE ENDEREÇO DO USUÁRIO
-  async addUserAddress(req, res){
-    const { user_id } = req.body;
+  //UPDATE DE DADOS DE USUÁRIO E ENDEREÇO
+  async updateUser(req, res){
+    const { tenant_id } = req;
+    const { user_id } = req.params;
+    
+    let obj = req.body;
+    var propNames = Object.getOwnPropertyNames(obj);
+    for (var i = 0; i < propNames.length; i++) {
+      var propName = propNames[i];
+      if (obj[propName] === null || obj[propName] === "" || obj[propName] === undefined) {
+          delete obj[propName];
+      };
+    };
+
     try{
       const user = await User.findByPk(user_id);
       if(!user){
         return res.status(400).send({err: "Usuário não encontrado."});
-      }
-      await Address.create(req.body);
+      };
+      if(tenant_id !== user.tenant_id){
+        return res.status(401).send({err: "Usuário não pertence ao Adm."});
+      };
 
-      return res.status(201).send({success: "Endereço cadastrado com sucesso."});
-    }catch(e){
-      console.log(e);
-      return res.status(400).send({err: "Erro no servidor."});
-    }
-  },
-  //UPDATE DE USUÁRIO
-  async update(req, res){
-    const { user_id } = req;
-    try{
-      await User.update(req.body, {where: {id: user_id}});
+      await User.update({
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        cpf: req.body.cpf
+      }, {where: {id: user_id, tenant_id}}).then(async () => {
+        const address = await Address.findOne({where: {user_id}});
+        if(!address){
+          await Address.create({
+            user_id,
+            state: req.body.address.state,
+            city: req.body.address.city,
+            street: req.body.address.street,
+            number: req.body.address.number,
+            type: req.body.address.type,
+            district: req.body.address.district,
+            zipcode: req.body.address.zipcode,
+            obs: req.body.address.obs 
+          });
+        }else{
+          await Address.update({
+            state: obj.address.state,
+            city: obj.address.city,
+            street: obj.address.street,
+            number: obj.address.number,
+            type: obj.address.type,
+            district: obj.address.district,
+            zipcode: obj.address.zipcode,
+            obs: obj.address.obs 
+           }, {where: {user_id}}
+          );
+        };
+      });
 
       return res.status(201).send({success: "Usuário atualizado com sucesso."});
     }catch(e){
@@ -55,7 +91,7 @@ module.exports = {
       return res.status(400).send({err: "Erro no servidor."});
     }
   },
-  //--------------------------------------------------------------------------------------//
+  //--------------------------------------------SUGGEST------------------------------------------//
   //LISTAR TODOS OS USUARIOS
   async getAllUsers(req, res){
     const { page, pageSize } = req.query;
@@ -86,7 +122,7 @@ module.exports = {
     const { id } = req.params;
     
     try{
-      const user = await User.findByPk(id, {include: { association: 'address'}});
+      const user = await User.findByPk(id, {include: {association: 'address'}});
       
       if(!user){
         return res.status(400).send({err: "Usuário não cadastrado."});

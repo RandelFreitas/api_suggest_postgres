@@ -7,7 +7,7 @@ class User extends Model {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       phone: DataTypes.STRING,
-      cpf_cnpj: DataTypes.STRING,
+      cpf: DataTypes.STRING,
       phone: DataTypes.STRING,
       password_reset_token: DataTypes.STRING,
       password_reset_expires: DataTypes.DATE,

@@ -11,7 +11,6 @@ routes.post('/reset-password', authController.resetPassword);
 routes.use(authMiddleware);
 routes.post('/sign-up', userController.signUp);
 routes.get('/logout', authController.logout);
-routes.patch('/login', userController.update);
-routes.post('/user-address', userController.addUserAddress);
+routes.patch('/user/:user_id', userController.updateUser);
 
 module.exports = routes;

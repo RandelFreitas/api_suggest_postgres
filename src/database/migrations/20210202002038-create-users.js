@@ -31,7 +31,7 @@ module.exports = {
       phone: {
         type: Sequelize.STRING,
       },
-      cpf_cnpj: {
+      cpf: {
         type: Sequelize.STRING,
       },
       password_reset_token: {
