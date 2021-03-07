@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mailer = require('../resources/mailer');
+const mailer = require('../../resources/mailer');
 
 const crypto = require('crypto');
-const User = require('../models/Adm/User');
+const User = require('../../models/Adm/User');
 
 module.exports = {
   //LOGIN
@@ -94,15 +94,4 @@ module.exports = {
   async logout(req, res){
     return res.json({"Func": "logout"});
   },
-  //OBTER USUARIO TESTE
-  async teste(req, res){
-    const { email } = req.body;
-    try{
-      const user = await User.findOne({where: {email}});
-
-      return res.send(user);
-    }catch(e){
-      console.log(e);
-    }
-  }
 }

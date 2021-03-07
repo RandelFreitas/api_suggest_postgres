@@ -1,8 +1,8 @@
-const Company = require('../models/Company/Company');
-const Address = require('../models/Shared/Address');
+const Company = require('../../models/Company/Company');
+const Address = require('../../models/Shared/Address');
 
 module.exports = {
-  //OBTER TODAS COMPANHIAS
+  //OBTER TODAS COMPANHIAS POR USUARIO
   async getAllCompanies(req, res){
     const { tenant_id } = req;
     
@@ -13,24 +13,6 @@ module.exports = {
       });
 
       return res.send(companies);
-    }catch(e){
-      console.log(e);
-      return res.status(400).send({err: "Erro no servidor."});
-    }
-  },
-  //CADASTRO DE ENDEREÇO PARA COMPANHIA
-  async addCompanyAddress(req, res){
-    const { company_id } = req.body;
-    try{
-      const company = await Company.findByPk(company_id);
-      
-      if(!company){
-        return res.status(400).send({err: "Companhia não encontrada."});
-      }
-
-      await Address.create(req.body);
-
-      return res.status(201).send({success: "Endereço cadastrado com sucesso."});
     }catch(e){
       console.log(e);
       return res.status(400).send({err: "Erro no servidor."});
@@ -88,7 +70,7 @@ module.exports = {
     for (var i = 0; i < propNames.length; i++) {
       var propName = propNames[i];
       if (obj[propName] === null || obj[propName] === "" || obj[propName] === undefined) {
-          delete obj[propName];
+        delete obj[propName];
       }
     }
 

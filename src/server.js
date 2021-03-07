@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/auth", require('./routes/authRoutes'));
 app.use("/adm", require('./routes/admRoutes'));
+app.use("/user", require('./routes/userRoutes'));
 app.use("/client", require('./routes/clientRoutes'));
 
 app.listen(3001, () => {
